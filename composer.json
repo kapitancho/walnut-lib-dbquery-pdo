@@ -1,0 +1,22 @@
+{
+    "name": "walnut/lib_dbquery_pdo",
+    "authors": [
+        {
+            "name": "Marian Kostadinov",
+            "email": "manchokapitancho@gmail.com"
+        }
+    ],
+	"autoload": {
+		"psr-4": {
+			"Walnut\\Lib\\DbQuery\\Pdo\\": "src/"
+		}
+	},
+	"require": {
+		"walnut/lib_dbquery": "dev-main"
+	},
+	"require-dev": {
+		"vimeo/psalm": "^4.9.3",
+		"phpunit/phpunit": "^9.5.9",
+		"ext-pdo": "*"
+	}
+}
