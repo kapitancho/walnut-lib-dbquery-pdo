@@ -3,8 +3,9 @@
 namespace Walnut\Lib\DbQuery\Pdo;
 
 use Walnut\Lib\DbQuery\QueryExecutor;
+use Walnut\Lib\TransactionContext\TransactionContext;
 
-final class PdoTransactionalQueryExecutor implements QueryExecutor /*, TransactionContext*/ {
+final class PdoTransactionalQueryExecutor implements QueryExecutor, TransactionContext {
 
 	public function __construct(
 		private /*readonly*/ PdoQueryExecutor $queryExecutor,
@@ -13,7 +14,6 @@ final class PdoTransactionalQueryExecutor implements QueryExecutor /*, Transacti
 		$this->pdoConnector->getConnection()->beginTransaction();
 	}
 
-	/*
 	public function saveChanges(): void {
 		$this->pdoConnector->getConnection()->commit();
 		$this->pdoConnector->getConnection()->beginTransaction();
@@ -23,7 +23,6 @@ final class PdoTransactionalQueryExecutor implements QueryExecutor /*, Transacti
 		$this->pdoConnector->getConnection()->rollBack();
 		$this->pdoConnector->getConnection()->beginTransaction();
 	}
-	*/
 
 	public function execute(string $query, array $boundParams = null): PdoQueryResult {
 		return $this->queryExecutor->execute($query, $boundParams);

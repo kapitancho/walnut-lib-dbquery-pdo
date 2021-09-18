@@ -7,13 +7,16 @@ use Walnut\Lib\DbQuery\Pdo\PdoTransactionalQueryExecutor;
 
 final class PdoTransactionalQueryExecutorTest extends TestCase {
 
-	public function testOk(): void {
+	private function getExecutor(): PdoTransactionalQueryExecutor {
 		$connector = new PdoConnector('sqlite::memory:', '', '');
-		$executor = new PdoTransactionalQueryExecutor(
+		return new PdoTransactionalQueryExecutor(
 			new PdoQueryExecutor($connector),
 			$connector
 		);
+	}
 
+	public function testOk(): void {
+		$executor = $this->getExecutor();
 		$this->assertEquals(
 			'0',
 			$executor->lastIdentity()
@@ -47,6 +50,29 @@ final class PdoTransactionalQueryExecutorTest extends TestCase {
 		$this->assertEquals(
 			[1 => [[1 => '1']]],
 			$executor->execute("SELECT 1 AS `key`, 1")->collectAsTreeData()->all()
+		);
+	}
+
+	public function testSaveOk(): void {
+		$executor = $this->getExecutor();
+		$executor->execute("CREATE TABLE test(id integer)");
+		$executor->execute("INSERT INTO test VALUES (1)");
+		$executor->saveChanges();
+		$this->assertEquals(
+			'1',
+			$executor->execute("SELECT COUNT(*) FROM test")->singleValue()
+		);
+	}
+
+	public function testRevertOk(): void {
+		$executor = $this->getExecutor();
+		$executor->execute("CREATE TABLE test(id integer)");
+		$executor->saveChanges();
+		$executor->execute("INSERT INTO test VALUES (1)");
+		$executor->revertChanges();
+		$this->assertEquals(
+			'0',
+			$executor->execute("SELECT COUNT(*) FROM test")->singleValue()
 		);
 	}
 
