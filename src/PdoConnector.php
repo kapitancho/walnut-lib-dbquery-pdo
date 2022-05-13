@@ -7,9 +7,9 @@ final class PdoConnector {
 	private ?\PDO $instance = null;
 
 	public function __construct(
-		private /*readonly*/ string $dsn,
-		private /*readonly*/ string $username,
-		private /*readonly*/ string $password
+		private readonly string $dsn,
+		private readonly string $username,
+		private readonly string $password
 	) {}
 
 	public function getConnection(): \PDO {

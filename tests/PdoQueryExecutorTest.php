@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use Walnut\Lib\DbQuery\Pdo\PdoConnector;
 use Walnut\Lib\DbQuery\Pdo\PdoQueryExecutor;
+use Walnut\Lib\DbQuery\QueryExecutionException;
 
 final class PdoQueryExecutorTest extends TestCase {
 
@@ -26,6 +27,11 @@ final class PdoQueryExecutorTest extends TestCase {
 		);
 
 		$this->assertEquals(
+			0,
+			$executor->execute("SELECT 1")->rowCount()
+		);
+
+		$this->assertEquals(
 			[[1 => '1']],
 			$executor->execute("SELECT 1")->all()
 		);
@@ -44,6 +50,14 @@ final class PdoQueryExecutorTest extends TestCase {
 			[1 => [[1 => '1']]],
 			$executor->execute("SELECT 1 AS `key`, 1")->collectAsTreeData()->all()
 		);
+	}
+
+	public function testException(): void {
+		$connector = new PdoConnector('sqlite::memory:', '', '');
+		$executor = new PdoQueryExecutor($connector);
+
+		$this->expectException(QueryExecutionException::class);
+		$executor->execute("SELECT X");
 	}
 
 }

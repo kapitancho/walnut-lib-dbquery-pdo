@@ -9,17 +9,21 @@ use Walnut\Lib\DbQuery\ResultBag\TreeDataResultBag;
 final class PdoQueryResult implements QueryResult {
 
 	public function __construct(
-		private /*readonly*/ \PDOStatement $pdoStatement
+		private readonly \PDOStatement $pdoStatement
 	) { }
 
 	public function all(): array {
 		return $this->pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
-	public function first(): mixed {
+	public function first(): ?array {
 		$result = $this->pdoStatement->fetch(\PDO::FETCH_ASSOC);
 		$this->pdoStatement->closeCursor();
-		return $result;
+		return $result ?: null;
+	}
+	
+	public function rowCount(): int {
+		return $this->pdoStatement->rowCount();
 	}
 
 	public function singleValue(): mixed {

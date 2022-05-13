@@ -8,8 +8,8 @@ use Walnut\Lib\TransactionContext\TransactionContext;
 final class PdoTransactionalQueryExecutor implements QueryExecutor, TransactionContext {
 
 	public function __construct(
-		private /*readonly*/ PdoQueryExecutor $queryExecutor,
-		private /*readonly*/ PdoConnector $pdoConnector
+		private readonly PdoQueryExecutor $queryExecutor,
+		private readonly PdoConnector $pdoConnector
 	) {
 		$this->pdoConnector->getConnection()->beginTransaction();
 	}
