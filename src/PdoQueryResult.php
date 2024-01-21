@@ -16,23 +16,23 @@ final class PdoQueryResult implements QueryResult {
 		return $this->pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
-	public function first(): ?array {
+	public function first(): string|int|float|bool|null|array|object {
 		$result = $this->pdoStatement->fetch(\PDO::FETCH_ASSOC);
 		$this->pdoStatement->closeCursor();
 		return $result ?: null;
 	}
-	
-	public function rowCount(): int {
-		return $this->pdoStatement->rowCount();
-	}
 
-	public function singleValue(): mixed {
+	public function singleValue(): string|int|float|bool|null {
 		/**
-		 * @var mixed $result
+		 * @var string|int|float|bool|null $result
 		 */
 		$result = $this->pdoStatement->fetch(\PDO::FETCH_COLUMN);
 		$this->pdoStatement->closeCursor();
 		return $result;
+	}
+
+	public function rowCount(): int {
+		return $this->pdoStatement->rowCount();
 	}
 
 	public function collectAsList(): ListResultBag {

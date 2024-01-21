@@ -2,6 +2,7 @@
 
 namespace Walnut\Lib\DbQuery\Pdo;
 
+use Walnut\Lib\DbQuery\PreparedQueryExecutor;
 use Walnut\Lib\DbQuery\QueryExecutionException;
 use Walnut\Lib\DbQuery\QueryExecutor;
 
@@ -10,6 +11,11 @@ final class PdoQueryExecutor implements QueryExecutor {
 	public function __construct(
 		private readonly PdoConnector $pdoConnector
 	) {}
+
+	public function prepare(string $query): PreparedQueryExecutor {
+		$stmt = $this->pdoConnector->getConnection()->prepare($query);
+		return new PdoPreparedQueryExecutor($stmt);
+	}
 
 	public function execute(string $query, array $boundParams = null): PdoQueryResult {
 		try {
